@@ -29,7 +29,11 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
+import java.time.chrono.HijrahChronology;
+import java.time.chrono.HijrahDate;
 import java.time.format.*;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
@@ -84,6 +88,11 @@ public final class TemporalObjects {
                 .toFormatter();
         } else if (target instanceof YearMonth) {
             return yearMonthFormatter(locale);
+        } else if (target instanceof HijrahDate) {
+            return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+                .withLocale(locale)
+                .withChronology(HijrahChronology.INSTANCE)
+                .withDecimalStyle(DecimalStyle.of(locale));
         } else {
             throw new IllegalArgumentException(
                 "Cannot format object of class \"" + target.getClass().getName() + "\" as a date");
@@ -109,6 +118,12 @@ public final class TemporalObjects {
             return ZonedDateTime.of((LocalDate) target, LocalTime.MIDNIGHT, defaultZoneId);
         } else if (target instanceof Instant) {
             return ZonedDateTime.ofInstant((Instant) target, defaultZoneId);
+        } else if (target instanceof HijrahDate) {
+            HijrahDate hijrahDate = (HijrahDate) target;
+            ChronoLocalDateTime<HijrahDate> localDateTime = hijrahDate.atTime(LocalTime.MIDNIGHT);
+            ChronoZonedDateTime<HijrahDate> zonedDateTime = localDateTime.atZone(defaultZoneId);
+            Instant instant = zonedDateTime.toInstant();
+            return ZonedDateTime.ofInstant(instant, defaultZoneId);
         } else {
             throw new IllegalArgumentException(
                 "Cannot format object of class \"" + target.getClass().getName() + "\" as a date");

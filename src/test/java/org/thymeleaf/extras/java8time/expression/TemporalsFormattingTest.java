@@ -16,6 +16,7 @@
 package org.thymeleaf.extras.java8time.expression;
 
 import java.time.*;
+import java.time.chrono.HijrahDate;
 import java.time.temporal.Temporal;
 import java.util.Locale;
 import org.junit.Test;
@@ -240,6 +241,12 @@ public class TemporalsFormattingTest {
     public void testIssue17() {
         Instant time = Instant.ofEpochSecond(1);
         assertEquals("1970-01-01", temporals.format(time, "yyyy-MM-dd", Locale.ENGLISH));
+    }
+
+    @Test
+    public void testHijrahDateFormat() {
+        Temporal time = HijrahDate.of( 1440, 5, 14);
+        assertEquals("2019-01-20 A", temporals.format(time, "yyyy-MM-dd GGGGG"));
     }
 
 }

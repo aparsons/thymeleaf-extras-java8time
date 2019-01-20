@@ -15,6 +15,7 @@
  */
 package org.thymeleaf.extras.java8time.expression;
 
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +26,8 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.HijrahChronology;
+import java.time.chrono.HijrahDate;
 import java.time.temporal.Temporal;
 import java.util.Locale;
 import org.junit.Test;
@@ -79,6 +82,13 @@ public class TemporalsClassesFormattingTest {
         Temporal time = OffsetDateTime.of(2015, 12, 31, 23, 59, 45, 0, ZoneOffset.MAX);
         assertEquals("December 31, 2015, 11:59:45 PMGMT+18:00", temporals.format(time, Locale.ENGLISH));
         assertEquals("31. Dezember 2015, 23:59:45GMT+18:00", temporals.format(time, Locale.GERMAN));
+    }
+
+    @Test
+    public void hijrahDate() {
+        Temporal time = HijrahDate.of( 1440, 5, 14);
+        assertEquals("Jumada I 14, 1440 AH", temporals.format(time, Locale.ENGLISH));
+        assertEquals("14. Dschumada I 1440 AH", temporals.format(time, Locale.GERMAN));
     }
 
     @Test
